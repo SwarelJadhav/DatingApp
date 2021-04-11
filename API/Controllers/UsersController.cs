@@ -5,11 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Cors;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    // [EnableCors("MyAllowSpecificOrigins")] 
     public class UsersController : ControllerBase
     {
         private readonly DataContext _context;
@@ -18,6 +20,7 @@ namespace API.Controllers
             _context = context;
 
         }
+        // [EnableCors("MyAllowSpecificOrigins")] 
         [HttpGet]
         public async Task< ActionResult<IEnumerable<AppUser>>> GetUsers(){
              return await _context.Users.ToListAsync();
