@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using API.DTOs;
 using Microsoft.EntityFrameworkCore;
 using API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
@@ -22,7 +23,7 @@ namespace API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserDTO>> Register([FromQuery] RegisterDTOs resgisterDTO)
+        public async Task<ActionResult<UserDTO>> Register(RegisterDTOs resgisterDTO)
         {
             if (await UserExists(resgisterDTO.username))
             {
@@ -47,7 +48,8 @@ namespace API.Controllers
             return await _context.Users.AnyAsync(x => x.UserName == username.ToLower());
         }
         [HttpPost("login")]
-        public async Task<ActionResult<UserDTO>> Login([FromQuery] LoginDTO loginDTO)
+        [AllowAnonymous]
+        public async Task<ActionResult<UserDTO>> Login(LoginDTO loginDTO)
         {
             var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == loginDTO.Username);
             if (user == null)
