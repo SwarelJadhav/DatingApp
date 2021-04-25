@@ -9,6 +9,9 @@ import {FormsModule} from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
+import{BrowserAnimationsModule} from '@angular/platform-browser/animations'
+import {ToastrModule} from 'ngx-toastr'
+import { SharedModule } from './modules/shared.module';
 
 @NgModule({
   declarations: [
@@ -22,7 +25,9 @@ import { RegisterComponent } from './register/register.component';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    NgbModule
+    NgbModule,
+    BrowserAnimationsModule,
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent]
