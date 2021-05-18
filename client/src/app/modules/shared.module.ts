@@ -4,6 +4,7 @@ import {ToastrModule} from 'ngx-toastr';
 import{TabsModule} from 'ngx-bootstrap/tabs'
 import{NgxGalleryModule} from '@kolkov/ngx-gallery'
 import {NgxSpinnerModule} from 'ngx-spinner'
+import {FileUploadModule} from 'ng2-file-upload'
 
 
 @NgModule({
@@ -15,10 +16,12 @@ import {NgxSpinnerModule} from 'ngx-spinner'
     }),
     TabsModule.forRoot(),
     NgxGalleryModule,
+    FileUploadModule
   ],
   exports:[
     TabsModule,
     NgxGalleryModule,
+    FileUploadModule
   ]
 })
 export class SharedModule { }

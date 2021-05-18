@@ -8,6 +8,7 @@ using API.DTOs;
 using Microsoft.EntityFrameworkCore;
 using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq;
 
 namespace API.Controllers
 {
@@ -51,7 +52,9 @@ namespace API.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<UserDTO>> Login(LoginDTO loginDTO)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == loginDTO.Username);
+            var user = await _context.Users
+                .Include(p=>p.Photos)
+                .SingleOrDefaultAsync(x => x.UserName == loginDTO.Username);
             if (user == null)
             {
                 return Unauthorized("Invalid user name");
@@ -65,9 +68,10 @@ namespace API.Controllers
                     return Unauthorized("Invalid password");
                 }
             }
-            return new UserDTO{
-                Username=user.UserName,
-                Token=_token.CreateToken(user)
+            return new UserDTO {
+                Username = user.UserName,
+                Token = _token.CreateToken(user),
+                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
             };
         }
     }

@@ -14,12 +14,12 @@ private currentUserSource=new ReplaySubject<User>(1);
 currentUser$=this.currentUserSource.asObservable();
   constructor(private http:HttpClient) { }
   login(model:any){
+    debugger;
    return this.http.post(this.baseUrl+"accounts/login",model).pipe(
      map((response:User)=>{
       const user=response;
       if(user){
-        localStorage.setItem('user',JSON.stringify(user));
-        this.currentUserSource.next(user)
+        this.setCurrentUser(user)
       }
      })
    )
@@ -29,8 +29,7 @@ currentUser$=this.currentUserSource.asObservable();
    return this.http.post(this.baseUrl+"accounts/register",model).pipe(
      map((user:User)=>{
        if(user){
-         localStorage.setItem('user',JSON.stringify(user))
-         this.currentUserSource.next(user);
+         this.setCurrentUser(user)
        }
        return user;
      })

@@ -16,6 +16,7 @@ galleryImages:NgxGalleryImage[]
   constructor(private memberService:MemberService,private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    debugger;
    this. loadMember();
    this.galleryOptions=[{
      width:'500px',
@@ -28,6 +29,7 @@ galleryImages:NgxGalleryImage[]
   
   }
   getImages():NgxGalleryImage[]{
+    debugger;
     const imageUrls=[]
     for(const photo of this.member.photos){
       imageUrls.push({
@@ -35,10 +37,11 @@ galleryImages:NgxGalleryImage[]
         medium:photo?.url,
         big:photo?.url
       })
-      return imageUrls;
     }
+    return imageUrls;
   }
   loadMember(){
+    debugger;
     this.memberService.getMember(this.route.snapshot.paramMap.get("username")).subscribe(member=>{
       this.member=member;
       this.galleryImages=this.getImages();
