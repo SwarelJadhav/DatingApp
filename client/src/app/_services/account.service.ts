@@ -26,6 +26,7 @@ currentUser$=this.currentUserSource.asObservable();
   }
 
   register(model:any){
+    debugger;
    return this.http.post(this.baseUrl+"accounts/register",model).pipe(
      map((user:User)=>{
        if(user){
@@ -36,7 +37,7 @@ currentUser$=this.currentUserSource.asObservable();
    )
   }
   setCurrentUser(user:User){
-    this.currentUserSource.next(user);
+     this.currentUserSource.next(user);
   }
   logout(){
     localStorage.removeItem('user');

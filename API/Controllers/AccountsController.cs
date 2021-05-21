@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using System.Linq;
+using AutoMapper;
 
 namespace API.Controllers
 {
@@ -16,11 +17,12 @@ namespace API.Controllers
     {
         private readonly DataContext _context;
         private readonly ITokenService _token;
-        public AccountsController(DataContext context, ITokenService token)
+        private readonly IMapper _mapper;
+        public AccountsController(DataContext context, ITokenService token, IMapper mapper)
         {
             _token = token;
             _context = context;
-
+            _mapper = mapper;
         }
 
         [HttpPost("register")]
@@ -30,18 +32,18 @@ namespace API.Controllers
             {
                 return BadRequest("User is taken");
             }
+            var user = _mapper.Map<AppUser>(resgisterDTO);
             using var hmac = new HMACSHA512();
-            var user = new AppUser
-            {
-                UserName = resgisterDTO.username.ToLower(),
-                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(resgisterDTO.password)),
-                PasswordSalt = hmac.Key
-            };
+            user.UserName = resgisterDTO.username.ToLower();
+            user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(resgisterDTO.password));
+            user.PasswordSalt = hmac.Key;
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            return new UserDTO{
-                Username=user.UserName,
-                Token=_token.CreateToken(user)
+            return new UserDTO
+            {
+                Username = user.UserName,
+                Token = _token.CreateToken(user),
+                KnownAs = user.KnownAs
             };
         }
         private async Task<bool> UserExists(string username)
@@ -53,7 +55,7 @@ namespace API.Controllers
         public async Task<ActionResult<UserDTO>> Login(LoginDTO loginDTO)
         {
             var user = await _context.Users
-                .Include(p=>p.Photos)
+                .Include(p => p.Photos)
                 .SingleOrDefaultAsync(x => x.UserName == loginDTO.Username);
             if (user == null)
             {
@@ -68,10 +70,12 @@ namespace API.Controllers
                     return Unauthorized("Invalid password");
                 }
             }
-            return new UserDTO {
+            return new UserDTO
+            {
                 Username = user.UserName,
                 Token = _token.CreateToken(user),
-                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
+                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+                KnownAs=user.KnownAs
             };
         }
     }

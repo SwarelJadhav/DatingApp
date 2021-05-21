@@ -1,0 +1,17 @@
+<div class="form-group">
+    <input 
+    type="text"
+    [class.is-invalid]='ngControl.touched && ngControl.invalid'
+    class="form-control"
+    [formControl]='ngControl.control'
+    placeholder="{{label}}"
+    bsDatepicker
+    [maxDate]='maxDate'
+    >
+    <!-- <div class="input-group">
+        <input type="text" [class.is-invalid]='ngControl.touched && ngControl.invalid' [maxDate]='maxDate' class="form-control" [formControl]='ngControl.control'  placeholder="{{label}}" name="dp" ngbDatepicker #d="ngbDatepicker">
+        <div class="input-group-append">
+      <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+        </div> -->
+    <div *ngIf="ngControl.control.errors?.required" class="invalid-feedback">{{label}} is required</div>
+</div>
